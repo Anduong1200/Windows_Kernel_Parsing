@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "logic_flow/native_core"
+]
+resolver = "2"

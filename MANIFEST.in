@@ -1,0 +1,22 @@
+# Include package data files
+include LICENSE
+include README.md
+include requirements.txt
+include pyproject.toml
+
+# Include IDA analysis script (critical for bundling)
+include logic_flow/core/ida_analysis_script.py
+
+# Include GUI assets
+recursive-include logic_flow/gui/assets *
+
+# Include sample files
+recursive-include samples *
+
+# Exclude development files
+exclude .gitignore
+exclude *.pyc
+exclude __pycache__
+recursive-exclude tests *
+recursive-exclude .git *
+recursive-exclude __pycache__ *

@@ -1,0 +1,30 @@
+# Windows Kernel Logic Flow Analyzer v2.3 - Professional Suite
+# Requirements for Full Semantic Analysis (Pwn Edition)
+# Python 3.10+ Required
+
+# --- Core Framework ---
+PyQt6>=6.5.0
+PyQt6-Qt6>=6.5.0
+PyQt6-WebEngine>=6.5.0
+psutil>=5.9.0
+pefile>=2023.2.7
+
+# --- Heuristic Analysis ---
+py-tlsh>=4.5.0
+ssdeep>=3.4
+
+# --- Advanced Semantic Engine (BinDiff Killer) ---
+angr>=9.2.65          # Binary Lifting & Symbolic Execution
+pyvex>=9.2.65         # VEX IR Lifting
+claripy>=9.2.65       # Constraint Solver (z3 wrapper)
+z3-solver>=4.12.0     # SMT Solver
+
+# --- ML & Similarity Search (1-Day Hunting) ---
+sentence-transformers>=2.2.0  # Semantic Embeddings
+faiss-cpu>=1.7.4              # Efficient Vector Search
+torch>=2.0.0                  # PyTorch backend for ML
+
+# Notes:
+# 1. 'py-tlsh' requires C++ Build Tools.
+# 2. 'angr' is heavy (~1GB). Ensure disk space.
+# 3. Native Rust module must be built separately (see README).
