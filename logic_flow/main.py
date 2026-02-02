@@ -32,16 +32,42 @@ def main():
     parser_analyze = subparsers.add_parser("analyze", help="Run full analysis (Requires IDA)")
     parser_analyze.add_argument("driver_path", help="Path to .sys file")
     
+    # Command: triage
+    parser_triage = subparsers.add_parser("triage", help="Deduplicate Crash Logs")
+    parser_triage.add_argument("crash_dir", help="Directory containing crash logs")
+    parser_triage.add_argument("--out", help="Output Report JSON", default="triage_report.json")
+    
     args = parser.parse_args()
 
     if args.command == "extract-interface":
         cmd_extract_interface(args)
     elif args.command == "gen-harness":
         cmd_gen_harness(args)
+    elif args.command == "triage":
+        cmd_triage(args)
     elif args.command == "analyze":
         print("Analysis pipeline requires IDA Pro setup. Use 'logic-flow-gui' or run scripts directly.")
     else:
         parser.print_help()
+
+def cmd_triage(args):
+    """Run crash triage."""
+    from .triage.dedup import CrashDedup, asdict
+    
+    print(f"Triaging crashes in: {args.crash_dir}")
+    deduper = CrashDedup()
+    report = deduper.process_directory(args.crash_dir)
+    
+    print(f"Found {report.total_crashes} total crashes.")
+    print(f"Identified {report.unique_crashes} unique clusters.")
+    
+    # Convert to dict for JSON serialization
+    report_dict = asdict(report)
+    
+    with open(args.out, 'w') as f:
+        json.dump(report_dict, f, indent=2)
+    print(f"Report saved to {args.out}")
+
 
 def cmd_extract_interface(args):
     print(f"Loading export: {args.input_json}")
