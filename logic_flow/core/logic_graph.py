@@ -123,7 +123,7 @@ class LogicGraph:
 
     def get_node_by_role(self, role: FunctionRole) -> List[FunctionNode]:
         """Get all nodes with a specific semantic role"""
-        return [node for node in self.nodes.values() if node.role == role]
+        return [node for node in self.nodes.values() if node and getattr(node, 'role', None) == role]
 
     def get_callers(self, func_ea: int) -> List[int]:
         """Get all callers of a function in this graph"""
@@ -140,7 +140,7 @@ class LogicGraph:
 
     def get_error_handlers(self) -> List[FunctionNode]:
         """Get all error handler nodes"""
-        return [node for node in self.nodes.values() if node.is_error_handler]
+        return [node for node in self.nodes.values() if node and getattr(node, 'is_error_handler', False)]
 
     def get_path_to_anchor(self, target_ea: int) -> List[int]:
         """Find path from target function back to anchor"""
@@ -167,7 +167,8 @@ class LogicGraph:
         """Get summary statistics of the graph"""
         role_counts = {}
         for node in self.nodes.values():
-            role_counts[node.role.value] = role_counts.get(node.role.value, 0) + 1
+            if node and hasattr(node, 'role'):
+                role_counts[node.role.value] = role_counts.get(node.role.value, 0) + 1
 
         return {
             "anchor_function": hex(self.anchor_function),
@@ -177,11 +178,11 @@ class LogicGraph:
             "role_distribution": role_counts,
             "boundary_functions": list(self.bounds),
             "error_handlers": len(self.get_error_handlers()),
-            "failfast_nodes": sum(1 for n in self.nodes.values() if n.has_failfast),
-            "irp_dispatchers": sum(1 for n in self.nodes.values() if n.role == FunctionRole.IRP_DISPATCHER),
-            "handle_acquire_nodes": sum(1 for n in self.nodes.values() if n.has_handle_acquire),
-            "handle_validation_nodes": sum(1 for n in self.nodes.values() if n.has_handle_validation),
-            "handle_release_nodes": sum(1 for n in self.nodes.values() if n.has_handle_release)
+            "failfast_nodes": sum(1 for n in self.nodes.values() if n and getattr(n, 'has_failfast', False)),
+            "irp_dispatchers": sum(1 for n in self.nodes.values() if n and getattr(n, 'role', None) == FunctionRole.IRP_DISPATCHER),
+            "handle_acquire_nodes": sum(1 for n in self.nodes.values() if n and getattr(n, 'has_handle_acquire', False)),
+            "handle_validation_nodes": sum(1 for n in self.nodes.values() if n and getattr(n, 'has_handle_validation', False)),
+            "handle_release_nodes": sum(1 for n in self.nodes.values() if n and getattr(n, 'has_handle_release', False))
         }
 
     def get_error_paths(self) -> List[List[int]]:
