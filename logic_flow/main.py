@@ -12,6 +12,7 @@ from .surface.extractor import generate_driver_model
 from .fuzzing.harness_generator import HarnessGenerator
 from .fuzzing.corpus_generator import CorpusGenerator
 from .core.logic_graph import LogicGraph
+from .report.html_generator import HTMLReportGenerator
 
 def main():
     parser = argparse.ArgumentParser(description="Logic Flow Analysis CLI")
@@ -37,6 +38,12 @@ def main():
     parser_triage.add_argument("crash_dir", help="Directory containing crash logs")
     parser_triage.add_argument("--out", help="Output Report JSON", default="triage_report.json")
     
+    # Command: gen-report
+    parser_report = subparsers.add_parser("gen-report", help="Generate HTML Report")
+    parser_report.add_argument("--interface", help="Path to interface.json", default="interface.json")
+    parser_report.add_argument("--triage", help="Path to triage_report.json", default=None)
+    parser_report.add_argument("-o", "--output", help="Output HTML file", default="report.html")
+    
     args = parser.parse_args()
 
     if args.command == "extract-interface":
@@ -45,6 +52,8 @@ def main():
         cmd_gen_harness(args)
     elif args.command == "triage":
         cmd_triage(args)
+    elif args.command == "gen-report":
+        cmd_gen_report(args)
     elif args.command == "analyze":
         print("Analysis pipeline requires IDA Pro setup. Use 'logic-flow-gui' or run scripts directly.")
     else:
@@ -169,6 +178,33 @@ def cmd_gen_harness(args):
 
     except Exception as e:
         print(f"Error generating harness: {e}")
+
+def cmd_gen_report(args):
+    """Generate HTML report from analysis data."""
+    print(f"Generating report...")
+    try:
+        generator = HTMLReportGenerator()
+        
+        # Load interface data
+        if Path(args.interface).exists():
+            generator.load_interface(args.interface)
+            print(f"  Loaded interface from {args.interface}")
+        else:
+            print(f"  Warning: Interface file not found: {args.interface}")
+        
+        # Load triage data if provided
+        if args.triage and Path(args.triage).exists():
+            generator.load_triage(args.triage)
+            print(f"  Loaded triage from {args.triage}")
+        
+        # Generate report
+        output_path = generator.generate(args.output)
+        print(f"Report saved to: {output_path}")
+        
+    except Exception as e:
+        print(f"Error generating report: {e}")
+        import traceback
+        traceback.print_exc()
 
 if __name__ == "__main__":
     main()
