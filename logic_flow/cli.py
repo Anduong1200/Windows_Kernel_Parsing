@@ -159,12 +159,118 @@ def cmd_bench(args: argparse.Namespace) -> int:
 
 
 # -----------------------------------------------------------------------
+# Subcommand: security-diff
+# -----------------------------------------------------------------------
+def cmd_security_diff(args: argparse.Namespace) -> int:
+    """Run security-aware diff with guard/sink/IOCTL analysis."""
+    from .core.protocol_v2 import DriverAnalysisExportV2
+    from .core.diff_pipeline import DiffPipeline
+    from .core.security_diff import SecurityDiffEngine
+
+    old_path = Path(args.old)
+    new_path = Path(args.new)
+    for p in (old_path, new_path):
+        if not p.exists():
+            logger.error(f"File not found: {p}")
+            return 1
+
+    # Run structural diff first
+    old_export = DriverAnalysisExportV2.load(str(old_path))
+    new_export = DriverAnalysisExportV2.load(str(new_path))
+
+    pipeline = DiffPipeline(top_k=args.top_k)
+    diff_report = pipeline.run(old_export, new_export)
+
+    # Run security diff
+    engine = SecurityDiffEngine(diff_report=diff_report)
+    sec_report = engine.run(old_export, new_export, diff_report)
+
+    # Print security report
+    print("\n=== FastDiff Security Report =======================")
+    print(f"  Old: {old_export.metadata.input_file}")
+    print(f"  New: {new_export.metadata.input_file}")
+    print()
+
+    # Findings
+    if sec_report.findings:
+        print(f"  --- Security Findings ({len(sec_report.findings)}) ---")
+        for f in sec_report.findings:
+            icon = {"critical": "[!!]", "high": "[!]", "medium": "[*]",
+                     "low": "[-]", "info": "[i]"}.get(f.risk.value, "[?]")
+            print(f"  {icon} [{f.risk.value.upper():8s}] {f.title}")
+            print(f"      {f.detail}")
+            if f.related_apis:
+                print(f"      APIs: {', '.join(f.related_apis)}")
+        print()
+    else:
+        print("  No security findings.\n")
+
+    # IOCTL deltas
+    if sec_report.ioctl_deltas:
+        print(f"  --- IOCTL Changes ({len(sec_report.ioctl_deltas)}) ---")
+        for d in sec_report.ioctl_deltas:
+            print(f"  [{d.change:16s}] code=0x{d.code:08X} method={d.method}")
+            if d.old_input_size != d.new_input_size:
+                print(f"      input_size: {d.old_input_size} -> {d.new_input_size}")
+        print()
+
+    # Dispatch deltas
+    if sec_report.dispatch_deltas:
+        print(f"  --- Dispatch Table Changes ({len(sec_report.dispatch_deltas)}) ---")
+        for d in sec_report.dispatch_deltas:
+            print(f"  [{d.change:16s}] MJ={d.major_function} "
+                  f"old={d.old_handler} new={d.new_handler}")
+        print()
+
+    # Fuzz targets
+    if sec_report.fuzz_targets:
+        print(f"  --- Fuzz Targets ({len(sec_report.fuzz_targets)}) ---")
+        for t in sec_report.fuzz_targets:
+            print(f"  P{t.priority} | 0x{t.ioctl_code:08X} | {t.method:12s} | "
+                  f"{t.handler_name}")
+            print(f"       {t.reason}")
+        print()
+
+    print("==================================================\n")
+
+    # Save JSON if requested
+    if args.output:
+        import json as _json
+        out = {
+            "findings": [
+                {"category": f.category, "risk": f.risk.value, "title": f.title,
+                 "detail": f.detail, "func_name": f.func_name,
+                 "related_apis": f.related_apis,
+                 "old_ea": f.old_ea, "new_ea": f.new_ea}
+                for f in sec_report.findings
+            ],
+            "ioctl_deltas": [
+                {"code": d.code, "method": d.method, "change": d.change,
+                 "risk": d.risk.value}
+                for d in sec_report.ioctl_deltas
+            ],
+            "fuzz_targets": [
+                {"ioctl_code": t.ioctl_code, "method": t.method,
+                 "handler_name": t.handler_name, "priority": t.priority,
+                 "reason": t.reason, "input_size": t.input_size}
+                for t in sec_report.fuzz_targets
+            ],
+            "stats": sec_report.stats,
+        }
+        with open(args.output, "w", encoding="utf-8") as f:
+            _json.dump(out, f, indent=2)
+        print(f"  Report saved to: {args.output}")
+
+    return 0
+
+
+# -----------------------------------------------------------------------
 # Main
 # -----------------------------------------------------------------------
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="fastdiff",
-        description="FastDiff — Production binary diffing for Windows drivers",
+        description="FastDiff -- Production binary diffing for Windows drivers",
     )
     parser.add_argument(
         "-v", "--verbose", action="store_true", help="Enable debug logging"
@@ -182,6 +288,13 @@ def main(argv: list[str] | None = None) -> int:
     p_diff.add_argument("--top-k", type=int, default=20, help="Top-K refinement (default: 20)")
     p_diff.add_argument("--output", "-o", default=None, help="Save report JSON to path")
 
+    # security-diff
+    p_sec = sub.add_parser("security-diff", help="Security-aware diff with guard/sink analysis")
+    p_sec.add_argument("--old", required=True, help="Old export JSON")
+    p_sec.add_argument("--new", required=True, help="New export JSON")
+    p_sec.add_argument("--top-k", type=int, default=20, help="Top-K refinement")
+    p_sec.add_argument("--output", "-o", default=None, help="Save security report JSON")
+
     # bench
     p_bench = sub.add_parser("bench", help="Benchmark diff pipeline")
     p_bench.add_argument("--old", required=True, help="Old export JSON")
@@ -198,6 +311,8 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_info(args)
     elif args.command == "diff":
         return cmd_diff(args)
+    elif args.command == "security-diff":
+        return cmd_security_diff(args)
     elif args.command == "bench":
         return cmd_bench(args)
     else:
@@ -207,3 +322,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
