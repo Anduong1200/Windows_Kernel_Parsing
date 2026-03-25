@@ -192,77 +192,49 @@ class DriverAnalysisExportV2:
     # ----- Deserialization -----
 
     @classmethod
-    def from_dict(cls, data: dict) -> "DriverAnalysisExportV2":
-        """Parse from raw dict (e.g. loaded JSON)."""
-        meta_raw = data.get("metadata", {})
-        meta = ExportMetadata(**{
-            k: v for k, v in meta_raw.items()
-            if k in ExportMetadata.__dataclass_fields__
-        })
-
-        # Validate schema version
-        if meta.schema_version != SCHEMA_VERSION:
-            import warnings
-            warnings.warn(
-                f"Schema version mismatch: expected {SCHEMA_VERSION}, "
-                f"got {meta.schema_version}. Parsing may be lossy."
-            )
-
-        # Parse functions
+    def _parse_functions(cls, data: dict) -> Dict[str, FunctionInfo]:
         functions = {}
         for ea_key, fdata in data.get("functions", {}).items():
-            fi_kwargs = {k: v for k, v in fdata.items()
-                         if k in FunctionInfo.__dataclass_fields__}
+            fi_kwargs = {k: v for k, v in fdata.items() if k in FunctionInfo.__dataclass_fields__}
             functions[str(ea_key)] = FunctionInfo(**fi_kwargs)
+        return functions
 
-        # Parse call graph
-        call_graph = []
-        for edge in data.get("call_graph", []):
-            cs_kwargs = {k: v for k, v in edge.items()
-                         if k in CallSite.__dataclass_fields__}
-            call_graph.append(CallSite(**cs_kwargs))
-
-        # Parse instructions
+    @classmethod
+    def _parse_instructions(cls, data: dict) -> Dict[str, List[Instruction]]:
         func_insns: Dict[str, List[Instruction]] = {}
         for ea_key, insns_raw in data.get("function_instructions", {}).items():
             insns = []
             for ir in insns_raw:
-                ops = [Operand(**{k: v for k, v in o.items()
-                                  if k in Operand.__dataclass_fields__})
-                       for o in ir.get("operands", [])]
-                insn_kwargs = {k: v for k, v in ir.items()
-                               if k in Instruction.__dataclass_fields__
-                               and k != "operands"}
+                ops = [Operand(**{k: v for k, v in o.items() if k in Operand.__dataclass_fields__}) for o in ir.get("operands", [])]
+                insn_kwargs = {k: v for k, v in ir.items() if k in Instruction.__dataclass_fields__ and k != "operands"}
                 insns.append(Instruction(operands=ops, **insn_kwargs))
             func_insns[str(ea_key)] = insns
+        return func_insns
 
-        # Parse strings
-        strings = [StringEntry(**{k: v for k, v in s.items()
-                                   if k in StringEntry.__dataclass_fields__})
-                   for s in data.get("strings", [])]
+    @classmethod
+    def from_dict(cls, data: dict) -> "DriverAnalysisExportV2":
+        """Parse from raw dict (e.g. loaded JSON)."""
+        meta_raw = data.get("metadata", {})
+        meta = ExportMetadata(**{k: v for k, v in meta_raw.items() if k in ExportMetadata.__dataclass_fields__})
 
-        # Parse imports
-        imports = [ImportEntry(**{k: v for k, v in i.items()
-                                   if k in ImportEntry.__dataclass_fields__})
-                   for i in data.get("imports", [])]
+        # Validate schema version
+        if meta.schema_version != SCHEMA_VERSION:
+            import warnings
+            warnings.warn(f"Schema version mismatch: expected {SCHEMA_VERSION}, got {meta.schema_version}. Parsing may be lossy.")
 
-        # Parse exports
-        exports = [ExportEntry(**{k: v for k, v in e.items()
-                                   if k in ExportEntry.__dataclass_fields__})
-                   for e in data.get("exports", [])]
+        functions = cls._parse_functions(data)
+        func_insns = cls._parse_instructions(data)
 
-        # Parse driver interface
+        call_graph = [CallSite(**{k: v for k, v in edge.items() if k in CallSite.__dataclass_fields__}) for edge in data.get("call_graph", [])]
+        strings = [StringEntry(**{k: v for k, v in s.items() if k in StringEntry.__dataclass_fields__}) for s in data.get("strings", [])]
+        imports = [ImportEntry(**{k: v for k, v in i.items() if k in ImportEntry.__dataclass_fields__}) for i in data.get("imports", [])]
+        exports = [ExportEntry(**{k: v for k, v in e.items() if k in ExportEntry.__dataclass_fields__}) for e in data.get("exports", [])]
+
         di_raw = data.get("driver_interface", {})
         driver_interface = DriverInterface(
-            dispatch_table=[DispatchEntry(**{k: v for k, v in d.items()
-                                             if k in DispatchEntry.__dataclass_fields__})
-                            for d in di_raw.get("dispatch_table", [])],
-            devices=[DeviceObject(**{k: v for k, v in d.items()
-                                     if k in DeviceObject.__dataclass_fields__})
-                     for d in di_raw.get("devices", [])],
-            ioctls=[IOCTLEntry(**{k: v for k, v in d.items()
-                                  if k in IOCTLEntry.__dataclass_fields__})
-                    for d in di_raw.get("ioctls", [])],
+            dispatch_table=[DispatchEntry(**{k: v for k, v in d.items() if k in DispatchEntry.__dataclass_fields__}) for d in di_raw.get("dispatch_table", [])],
+            devices=[DeviceObject(**{k: v for k, v in d.items() if k in DeviceObject.__dataclass_fields__}) for d in di_raw.get("devices", [])],
+            ioctls=[IOCTLEntry(**{k: v for k, v in d.items() if k in IOCTLEntry.__dataclass_fields__}) for d in di_raw.get("ioctls", [])],
             detected_pools=di_raw.get("detected_pools", []),
         )
 

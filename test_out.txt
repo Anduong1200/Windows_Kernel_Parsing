@@ -1,0 +1,148 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: D:\examinate\asusptp_poc\18\project
+configfile: pyproject.toml
+plugins: anyio-4.12.1, dash-3.4.0, cov-7.0.0
+collecting ... collected 58 items
+
+tests/test_diff_pipeline.py::TestDiffPipelineUnit::test_diff_report_empty PASSED [  1%]
+tests/test_diff_pipeline.py::TestDiffPipelineUnit::test_diff_report_summary PASSED [  3%]
+tests/test_diff_pipeline.py::TestDiffPipelineUnit::test_pipeline_deterministic PASSED [  5%]
+tests/test_diff_pipeline.py::TestDiffPipelineUnit::test_pipeline_identical_exports PASSED [  6%]
+tests/test_diff_pipeline.py::TestDiffPipelineIntegration::test_identical_function_scores_one PASSED [  8%]
+tests/test_diff_pipeline.py::TestDiffPipelineIntegration::test_matched_by_name PASSED [ 10%]
+tests/test_diff_pipeline.py::TestDiffPipelineIntegration::test_new_function_is_unmatched FAILED [ 12%]
+tests/test_diff_pipeline.py::TestDiffPipelineIntegration::test_old_only_function_is_unmatched FAILED [ 13%]
+tests/test_diff_pipeline.py::TestDiffPipelineIntegration::test_report_has_timing_stats PASSED [ 15%]
+tests/test_diff_reflecting_safety.py::TestDiffReflectingSafety::test_compare_logic_flows_empty_graph PASSED [ 17%]
+tests/test_diff_reflecting_safety.py::TestDiffReflectingSafety::test_is_failfast_api_safety PASSED [ 18%]
+tests/test_ida_client.py::TestIDAClientConnection::test_connect_receives_handshake PASSED [ 20%]
+tests/test_ida_client.py::TestIDAClientCommands::test_progress_callback_invoked PASSED [ 22%]
+tests/test_ida_client.py::TestIDAClientCommands::test_send_command_receives_response PASSED [ 24%]
+tests/test_ida_client.py::TestFragmentedPackets::test_recv_exactly_handles_fragmentation PASSED [ 25%]
+tests/test_logic_graph.py::TestLogicGraph::test_create_graph_nodes_edges PASSED [ 27%]
+tests/test_logic_graph.py::TestLogicGraph::test_serialization_round_trip_equality PASSED [ 29%]
+tests/test_logic_graph_fix.py::TestLogicGraphFixes::test_add_edge_deduplication PASSED [ 31%]
+tests/test_logic_graph_fix.py::TestLogicGraphFixes::test_round_trip PASSED [ 32%]
+tests/test_logic_graph_fix.py::TestLogicGraphFixes::test_serialization_of_sets PASSED [ 34%]
+tests/test_native_binding.py::TestNativeBinding::test_bfs_traversal SKIPPED [ 36%]
+tests/test_native_binding.py::TestNativeBinding::test_import SKIPPED     [ 37%]
+tests/test_native_binding.py::TestNativeBinding::test_jaccard_similarity SKIPPED [ 39%]
+tests/test_protocol_v2.py::TestProtocolV2Schema::test_callsite_has_callsite_ea PASSED [ 41%]
+tests/test_protocol_v2.py::TestProtocolV2Schema::test_empty_export_roundtrip PASSED [ 43%]
+tests/test_protocol_v2.py::TestProtocolV2Schema::test_function_info_roundtrip PASSED [ 44%]
+tests/test_protocol_v2.py::TestProtocolV2Schema::test_import_entry PASSED [ 46%]
+tests/test_protocol_v2.py::TestProtocolV2Schema::test_schema_version_constant PASSED [ 48%]
+tests/test_protocol_v2.py::TestProtocolV2Schema::test_string_entry PASSED [ 50%]
+tests/test_protocol_v2.py::TestProtocolV2Validation::test_missing_metadata PASSED [ 51%]
+tests/test_protocol_v2.py::TestProtocolV2Validation::test_missing_sha256 PASSED [ 53%]
+tests/test_protocol_v2.py::TestProtocolV2Validation::test_valid_export PASSED [ 55%]
+tests/test_protocol_v2.py::TestProtocolV2Validation::test_wrong_schema_version PASSED [ 56%]
+tests/test_protocol_v2.py::TestProtocolV2FileIO::test_load_sample_new PASSED [ 58%]
+tests/test_protocol_v2.py::TestProtocolV2FileIO::test_load_sample_old PASSED [ 60%]
+tests/test_protocol_v2.py::TestProtocolV2FileIO::test_save_and_load PASSED [ 62%]
+tests/test_provider_mock.py::TestMockIDAProvider::test_get_ea_name PASSED [ 63%]
+tests/test_provider_mock.py::TestMockIDAProvider::test_get_func PASSED   [ 65%]
+tests/test_provider_mock.py::TestMockIDAProvider::test_xrefs_to PASSED   [ 67%]
+tests/test_security_diff.py::TestSecurityModel::test_alloc_apis_classified PASSED [ 68%]
+tests/test_security_diff.py::TestSecurityModel::test_build_profile_guarded PASSED [ 70%]
+tests/test_security_diff.py::TestSecurityModel::test_build_profile_unguarded_sink PASSED [ 72%]
+tests/test_security_diff.py::TestSecurityModel::test_dispatch_handler_tagging PASSED [ 74%]
+tests/test_security_diff.py::TestSecurityModel::test_guard_apis_classified PASSED [ 75%]
+tests/test_security_diff.py::TestSecurityModel::test_ioctl_handler_tagging PASSED [ 77%]
+tests/test_security_diff.py::TestSecurityModel::test_sink_apis_classified PASSED [ 79%]
+tests/test_security_diff.py::TestSecurityModel::test_underscore_stripping PASSED [ 81%]
+tests/test_security_diff.py::TestSecurityModel::test_unknown_api_is_neutral PASSED [ 82%]
+tests/test_security_diff.py::TestSecurityDiffIntegration::test_fuzz_targets_generated PASSED [ 84%]
+tests/test_security_diff.py::TestSecurityDiffIntegration::test_fuzz_targets_sorted_by_priority PASSED [ 86%]
+tests/test_security_diff.py::TestSecurityDiffIntegration::test_ioctl_size_change_detected PASSED [ 87%]
+tests/test_security_diff.py::TestSecurityDiffIntegration::test_new_import_detected_in_profiles PASSED [ 89%]
+tests/test_security_diff.py::TestSecurityDiffIntegration::test_profiles_built_for_non_imports PASSED [ 91%]
+tests/test_security_diff.py::TestSecurityDiffIntegration::test_security_diff_runs PASSED [ 93%]
+tests/test_security_diff.py::TestSecurityDiffIntegration::test_summary_text PASSED [ 94%]
+tests/test_two_pass_analysis.py::test_logic_graph_serialization PASSED   [ 96%]
+tests/test_two_pass_analysis.py::test_ida_script_argument_parsing PASSED [ 98%]
+tests/test_two_pass_analysis.py::test_prefiltering_logic PASSED          [100%]
+
+================================== FAILURES ===================================
+_________ TestDiffPipelineIntegration.test_new_function_is_unmatched __________
+
+self = <test_diff_pipeline.TestDiffPipelineIntegration testMethod=test_new_function_is_unmatched>
+
+    def test_new_function_is_unmatched(self):
+        """CheckBufferBounds (new only) should be in unmatched_new."""
+        report = self.pipeline.run(self.old_export, self.new_export)
+    
+        new_func_names = {
+            self.new_export.functions[str(ea)].name
+            for ea in report.unmatched_new
+            if str(ea) in self.new_export.functions
+        }
+>       self.assertIn("CheckBufferBounds", new_func_names)
+E       AssertionError: 'CheckBufferBounds' not found in set()
+
+tests\test_diff_pipeline.py:110: AssertionError
+_______ TestDiffPipelineIntegration.test_old_only_function_is_unmatched _______
+
+self = <test_diff_pipeline.TestDiffPipelineIntegration testMethod=test_old_only_function_is_unmatched>
+
+    def test_old_only_function_is_unmatched(self):
+        """sub_140002000 (old only) should be in unmatched_old."""
+        report = self.pipeline.run(self.old_export, self.new_export)
+    
+        old_func_names = {
+            self.old_export.functions[str(ea)].name
+            for ea in report.unmatched_old
+            if str(ea) in self.old_export.functions
+        }
+>       self.assertIn("sub_140002000", old_func_names)
+E       AssertionError: 'sub_140002000' not found in set()
+
+tests\test_diff_pipeline.py:121: AssertionError
+============================== warnings summary ===============================
+tests/test_ida_client.py::TestIDAClientCommands::test_progress_callback_invoked
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\site-packages\_pytest\threadexception.py:58: PytestUnhandledThreadExceptionWarning: Exception in thread Thread-2 (server_thread)
+  
+  Traceback (most recent call last):
+    File "C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 1045, in _bootstrap_inner
+      self.run()
+    File "C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\threading.py", line 982, in run
+      self._target(*self._args, **self._kwargs)
+    File "D:\examinate\asusptp_poc\18\project\tests\test_ida_client.py", line 176, in server_thread
+      self.server.accept_client()
+    File "D:\examinate\asusptp_poc\18\project\tests\test_ida_client.py", line 47, in accept_client
+      self.client_socket, _ = self.server_socket.accept()
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\socket.py", line 294, in accept
+      fd, addr = self._accept()
+                 ^^^^^^^^^^^^^^
+  OSError: [WinError 10038] An operation was attempted on something that is not a socket
+  
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+    warnings.warn(pytest.PytestUnhandledThreadExceptionWarning(msg))
+
+tests/test_two_pass_analysis.py::test_logic_graph_serialization
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_two_pass_analysis.py::test_logic_graph_serialization returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_two_pass_analysis.py::test_ida_script_argument_parsing
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_two_pass_analysis.py::test_ida_script_argument_parsing returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_two_pass_analysis.py::test_prefiltering_logic
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\site-packages\_pytest\python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_two_pass_analysis.py::test_prefiltering_logic returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_diff_pipeline.py::TestDiffPipelineIntegration::test_new_function_is_unmatched
+FAILED tests/test_diff_pipeline.py::TestDiffPipelineIntegration::test_old_only_function_is_unmatched
+============= 2 failed, 53 passed, 3 skipped, 4 warnings in 0.71s =============

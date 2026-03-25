@@ -15,7 +15,7 @@ Falls back to Python-only matching when Rust native core is not available.
 from __future__ import annotations
 import logging
 import time
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Set
 
 from .protocol_v2 import DriverAnalysisExportV2, FunctionInfo, Instruction
 from .diff_report import DiffReport, FunctionMatch
@@ -48,13 +48,9 @@ class DiffPipeline:
     ) -> DiffReport:
         """
         Execute the full diff pipeline.
-
-        Returns:
-            DiffReport with matched/unmatched function lists.
         """
         t0 = time.perf_counter()
 
-        # Build lookup structures
         old_funcs = old_export.functions
         new_funcs = new_export.functions
         old_insns = old_export.function_instructions
@@ -65,130 +61,18 @@ class DiffPipeline:
         matched_new_eas: Set[int] = set()
 
         # ── Stage 0: Exact name match ──────────────────────────────────
-        t_stage0 = time.perf_counter()
-        new_by_name: Dict[str, List[FunctionInfo]] = {}
-        for fi in new_funcs.values():
-            new_by_name.setdefault(fi.name, []).append(fi)
-
-        for ea_str, old_fi in old_funcs.items():
-            old_ea = old_fi.ea
-            if old_ea in matched_old_eas:
-                continue
-
-            candidates = new_by_name.get(old_fi.name, [])
-            for new_fi in candidates:
-                if new_fi.ea not in matched_new_eas:
-                    # Name match found — check if instructions also match
-                    score = self._quick_instruction_score(
-                        old_insns.get(str(old_ea), []),
-                        new_insns.get(str(new_fi.ea), []),
-                    )
-                    matched.append(FunctionMatch(
-                        old_ea=old_ea,
-                        new_ea=new_fi.ea,
-                        score=score,
-                        match_type="exact_name",
-                        name_old=old_fi.name,
-                        name_new=new_fi.name,
-                    ))
-                    matched_old_eas.add(old_ea)
-                    matched_new_eas.add(new_fi.ea)
-                    break
-
-        stage0_time = time.perf_counter() - t_stage0
-        logger.info(
-            f"Stage 0 (exact name): {len(matched)} matches in {stage0_time:.3f}s"
-        )
+        t_s0 = time.perf_counter()
+        self._stage0_exact_name(old_funcs, new_funcs, old_insns, new_insns, matched, matched_old_eas, matched_new_eas)
+        stage0_time = time.perf_counter() - t_s0
 
         # ── Stage 1: Opcode hash similarity for remaining ──────────────
-        t_stage1 = time.perf_counter()
-
-        remaining_old = [
-            fi for fi in old_funcs.values()
-            if fi.ea not in matched_old_eas and not fi.is_import
-        ]
-        remaining_new = [
-            fi for fi in new_funcs.values()
-            if fi.ea not in matched_new_eas and not fi.is_import
-        ]
-
-        if remaining_old and remaining_new:
-            # Compute opcode hashes for remaining functions
-            old_hashes: Dict[int, str] = {}
-            for fi in remaining_old:
-                insns = old_insns.get(str(fi.ea), [])
-                mnemonics = [i.mnemonic for i in insns if i.mnemonic]
-                if mnemonics:
-                    old_hashes[fi.ea] = compute_opcode_hash(mnemonics)
-
-            new_hashes: Dict[int, str] = {}
-            for fi in remaining_new:
-                insns = new_insns.get(str(fi.ea), [])
-                mnemonics = [i.mnemonic for i in insns if i.mnemonic]
-                if mnemonics:
-                    new_hashes[fi.ea] = compute_opcode_hash(mnemonics)
-
-            # For each unmatched old function, find best match in new
-            for old_fi in remaining_old:
-                if old_fi.ea in matched_old_eas:
-                    continue
-                old_hash = old_hashes.get(old_fi.ea)
-                if not old_hash:
-                    continue
-
-                best_score = 0
-                best_new_fi: Optional[FunctionInfo] = None
-
-                for new_fi in remaining_new:
-                    if new_fi.ea in matched_new_eas:
-                        continue
-                    new_hash = new_hashes.get(new_fi.ea)
-                    if not new_hash:
-                        continue
-
-                    # Size filter: skip if sizes differ by more than 3x
-                    if old_fi.size > 0 and new_fi.size > 0:
-                        ratio = max(old_fi.size, new_fi.size) / min(old_fi.size, new_fi.size)
-                        if ratio > 3.0:
-                            continue
-
-                    score = compare_opcode_hash(old_hash, new_hash)
-                    if score > best_score and score >= self.exact_threshold:
-                        best_score = score
-                        best_new_fi = new_fi
-
-                if best_new_fi is not None:
-                    matched.append(FunctionMatch(
-                        old_ea=old_fi.ea,
-                        new_ea=best_new_fi.ea,
-                        score=best_score / 100.0,
-                        match_type="exact_hash",
-                        name_old=old_fi.name,
-                        name_new=best_new_fi.name,
-                    ))
-                    matched_old_eas.add(old_fi.ea)
-                    matched_new_eas.add(best_new_fi.ea)
-
-        stage1_time = time.perf_counter() - t_stage1
-        hash_matches = sum(1 for m in matched if m.match_type == "exact_hash")
-        logger.info(
-            f"Stage 1 (opcode hash): {hash_matches} matches in {stage1_time:.3f}s"
-        )
-
-        # ── Stage 2: Sketch-based matching (Rust native) ───────────────
-        # TODO: Implement when native simhash/minhash/winnowing are ready
-        # For now, fall through to report generation
+        t_s1 = time.perf_counter()
+        self._stage1_opcode_hash(old_funcs, new_funcs, old_insns, new_insns, matched, matched_old_eas, matched_new_eas)
+        stage1_time = time.perf_counter() - t_s1
 
         # ── Build report ───────────────────────────────────────────────
-        unmatched_old = [
-            fi.ea for fi in old_funcs.values()
-            if fi.ea not in matched_old_eas and not fi.is_import
-        ]
-        unmatched_new = [
-            fi.ea for fi in new_funcs.values()
-            if fi.ea not in matched_new_eas and not fi.is_import
-        ]
-
+        unmatched_old = [fi.ea for fi in old_funcs.values() if fi.ea not in matched_old_eas and not fi.is_import]
+        unmatched_new = [fi.ea for fi in new_funcs.values() if fi.ea not in matched_new_eas and not fi.is_import]
         total_time = time.perf_counter() - t0
 
         report = DiffReport(
@@ -204,9 +88,85 @@ class DiffPipeline:
                 "native_available": _NATIVE_AVAILABLE,
             },
         )
-
         logger.info(f"Pipeline complete: {report.summary()}")
         return report
+
+    def _stage0_exact_name(self, old_funcs, new_funcs, old_insns, new_insns, matched, matched_old_eas, matched_new_eas):
+        new_by_name: Dict[str, List[FunctionInfo]] = {}
+        for fi in new_funcs.values():
+            new_by_name.setdefault(fi.name, []).append(fi)
+
+        for ea_str, old_fi in old_funcs.items():
+            old_ea = old_fi.ea
+            if old_ea in matched_old_eas:
+                continue
+
+            candidates = new_by_name.get(old_fi.name, [])
+            for new_fi in candidates:
+                if new_fi.ea not in matched_new_eas:
+                    score = self._quick_instruction_score(old_insns.get(str(old_ea), []), new_insns.get(str(new_fi.ea), []))
+                    matched.append(FunctionMatch(
+                        old_ea=old_ea, new_ea=new_fi.ea, score=score,
+                        match_type="exact_name", name_old=old_fi.name, name_new=new_fi.name,
+                    ))
+                    matched_old_eas.add(old_ea)
+                    matched_new_eas.add(new_fi.ea)
+                    break
+        logger.info(f"Stage 0 (exact name): {len(matched)} matches")
+
+    def _stage1_opcode_hash(self, old_funcs, new_funcs, old_insns, new_insns, matched, matched_old_eas, matched_new_eas):
+        remaining_old = [fi for fi in old_funcs.values() if fi.ea not in matched_old_eas and not fi.is_import]
+        remaining_new = [fi for fi in new_funcs.values() if fi.ea not in matched_new_eas and not fi.is_import]
+        if not remaining_old or not remaining_new:
+            return
+
+        old_hashes = {}
+        for fi in remaining_old:
+            mnemonics = [i.mnemonic for i in old_insns.get(str(fi.ea), []) if i.mnemonic]
+            if mnemonics:
+                old_hashes[fi.ea] = compute_opcode_hash(mnemonics)
+
+        new_hashes = {}
+        for fi in remaining_new:
+            mnemonics = [i.mnemonic for i in new_insns.get(str(fi.ea), []) if i.mnemonic]
+            if mnemonics:
+                new_hashes[fi.ea] = compute_opcode_hash(mnemonics)
+
+        count_before = len(matched)
+        for old_fi in remaining_old:
+            if old_fi.ea in matched_old_eas:
+                continue
+            old_hash = old_hashes.get(old_fi.ea)
+            if not old_hash:
+                continue
+
+            best_score = 0
+            best_new_fi = None
+
+            for new_fi in remaining_new:
+                if new_fi.ea in matched_new_eas:
+                    continue
+                new_hash = new_hashes.get(new_fi.ea)
+                if not new_hash:
+                    continue
+
+                if old_fi.size > 0 and new_fi.size > 0:
+                    if max(old_fi.size, new_fi.size) / min(old_fi.size, new_fi.size) > 3.0:
+                        continue
+
+                score = compare_opcode_hash(old_hash, new_hash)
+                if score > best_score and score >= self.exact_threshold:
+                    best_score = score
+                    best_new_fi = new_fi
+
+            if best_new_fi is not None:
+                matched.append(FunctionMatch(
+                    old_ea=old_fi.ea, new_ea=best_new_fi.ea, score=best_score / 100.0,
+                    match_type="exact_hash", name_old=old_fi.name, name_new=best_new_fi.name,
+                ))
+                matched_old_eas.add(old_fi.ea)
+                matched_new_eas.add(best_new_fi.ea)
+        logger.info(f"Stage 1 (opcode hash): {len(matched) - count_before} matches")
 
     def _quick_instruction_score(
         self,

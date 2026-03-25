@@ -69,12 +69,6 @@ class DisassemblerProvider(ABC):
         """Return the name of this provider (e.g., 'IDA', 'Ghidra')."""
         pass
     
-    @property
-    @abstractmethod
-    def version(self) -> str:
-        """Return the version of the disassembler."""
-        pass
-    
     @abstractmethod
     def is_available(self) -> bool:
         """Check if this provider is available in the current environment."""
@@ -89,26 +83,6 @@ class DisassemblerProvider(ABC):
         """Get function containing the given address."""
         pass
     
-    @abstractmethod
-    def get_function_by_name(self, name: str) -> Optional[FunctionInfo]:
-        """Get function by name."""
-        pass
-    
-    @abstractmethod
-    def get_all_functions(self) -> List[FunctionInfo]:
-        """Get all functions in the binary."""
-        pass
-    
-    @abstractmethod
-    def get_function_name(self, address: int) -> Optional[str]:
-        """Get name of function at address."""
-        pass
-    
-    @abstractmethod
-    def get_function_bytes(self, address: int) -> Optional[bytes]:
-        """Get raw bytes of function."""
-        pass
-    
     # =========================================================================
     # Instruction Operations
     # =========================================================================
@@ -119,11 +93,6 @@ class DisassemblerProvider(ABC):
         pass
     
     @abstractmethod
-    def get_function_instructions(self, func_address: int) -> List[InstructionInfo]:
-        """Get all instructions in a function."""
-        pass
-    
-    @abstractmethod
     def get_mnemonic(self, address: int) -> Optional[str]:
         """Get instruction mnemonic at address."""
         pass
@@ -131,16 +100,6 @@ class DisassemblerProvider(ABC):
     # =========================================================================
     # Cross-Reference Operations
     # =========================================================================
-    
-    @abstractmethod
-    def get_xrefs_to(self, address: int) -> List[XrefInfo]:
-        """Get all cross-references TO this address."""
-        pass
-    
-    @abstractmethod
-    def get_xrefs_from(self, address: int) -> List[XrefInfo]:
-        """Get all cross-references FROM this address."""
-        pass
     
     @abstractmethod
     def get_callers(self, func_address: int) -> List[int]:
@@ -164,15 +123,6 @@ class DisassemblerProvider(ABC):
     @abstractmethod
     def get_bytes(self, address: int, size: int) -> bytes:
         """Get raw bytes from address."""
-        pass
-    
-    # =========================================================================
-    # Navigation
-    # =========================================================================
-    
-    @abstractmethod
-    def jump_to(self, address: int) -> bool:
-        """Jump to address in the disassembler UI (if supported)."""
         pass
 
 
@@ -234,11 +184,6 @@ class GhidraHeadlessProvider(DisassemblerProvider):
     @property
     def name(self) -> str:
         return "Ghidra"
-    
-    @property
-    def version(self) -> str:
-        # Would parse from Ghidra installation
-        return "10.x"
     
     def is_available(self) -> bool:
         """Check if Ghidra headless is available."""
@@ -331,45 +276,12 @@ class GhidraHeadlessProvider(DisassemblerProvider):
     def get_function(self, address: int) -> Optional[FunctionInfo]:
         return self._function_cache.get(address)
     
-    def get_function_by_name(self, name: str) -> Optional[FunctionInfo]:
-        for func in self._function_cache.values():
-            if func.name == name:
-                return func
-        return None
-    
-    def get_all_functions(self) -> List[FunctionInfo]:
-        return list(self._function_cache.values())
-    
-    def get_function_name(self, address: int) -> Optional[str]:
-        func = self.get_function(address)
-        return func.name if func else None
-    
-    def get_function_bytes(self, address: int) -> Optional[bytes]:
-        # Would need to access Ghidra's byte provider
-        return None
-    
     def get_instruction(self, address: int) -> Optional[InstructionInfo]:
         return self._instruction_cache.get(address)
-    
-    def get_function_instructions(self, func_address: int) -> List[InstructionInfo]:
-        func = self.get_function(func_address)
-        if not func:
-            return []
-        
-        return [
-            insn for addr, insn in self._instruction_cache.items()
-            if func.start_ea <= addr < func.end_ea
-        ]
     
     def get_mnemonic(self, address: int) -> Optional[str]:
         insn = self.get_instruction(address)
         return insn.mnemonic if insn else None
-    
-    def get_xrefs_to(self, address: int) -> List[XrefInfo]:
-        return []  # Would query Ghidra's reference manager
-    
-    def get_xrefs_from(self, address: int) -> List[XrefInfo]:
-        return []
     
     def get_callers(self, func_address: int) -> List[int]:
         return []
@@ -382,30 +294,12 @@ class GhidraHeadlessProvider(DisassemblerProvider):
     
     def get_bytes(self, address: int, size: int) -> bytes:
         return b''
-    
-    def jump_to(self, address: int) -> bool:
-        # Headless mode doesn't support UI navigation
-        return False
 
 
 # =============================================================================
 # PROVIDER FACTORY
 # =============================================================================
 
-_active_provider: Optional[DisassemblerProvider] = None
-
-
-def get_provider() -> Optional[DisassemblerProvider]:
-    """Get the currently active disassembler provider."""
-    global _active_provider
-    return _active_provider
-
-
-def set_provider(provider: DisassemblerProvider):
-    """Set the active disassembler provider."""
-    global _active_provider
-    _active_provider = provider
-    logger.info(f"Disassembler provider set to: {provider.name}")
 
 
 def create_provider(provider_type: DisassemblerType, **kwargs) -> DisassemblerProvider:

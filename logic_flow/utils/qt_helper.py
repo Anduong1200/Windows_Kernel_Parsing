@@ -11,14 +11,7 @@ from PyQt6.QtCore import QTimer, Qt, QRunnable, pyqtSlot, QObject, pyqtSignal
 from PyQt6.QtGui import QFont, QPalette, QColor
 
 
-def create_font(family="Segoe UI", size=9, weight=None):
-    """Create optimized font"""
-    font = QFont(family, size)
-    if weight:
-        font.setWeight(weight)
-    # Optimize font rendering
-    font.setStyleHint(QFont.StyleHint.System, QFont.StyleStrategy.PreferAntialias)
-    return font
+
 
 
 def setup_qt_environment():
@@ -562,10 +555,7 @@ def apply_theme(app: QApplication, dark_mode=True):
     )
 
 
-def setup_application_attributes(app: QApplication):
-    """Setup optimized application attributes and apply theme"""
-    optimize_application(app)
-    apply_modern_dark_theme(app)
+
 
 
 def optimize_application(app: QApplication):
@@ -627,13 +617,7 @@ def create_performance_timer():
     return QTimer()
 
 
-def batch_widget_updates(widget: QWidget):
-    """Batch widget updates for better performance"""
-    widget.setUpdatesEnabled(False)
-    try:
-        yield widget
-    finally:
-        widget.setUpdatesEnabled(True)
+
         widget.update()
 
 
