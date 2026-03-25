@@ -1,13 +1,19 @@
 [package]
 name = "logic_flow_native"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
+description = "FastDiff native core — high-performance sketch algorithms for binary diffing"
 
 [lib]
 name = "logic_flow_native"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.20.0", features = ["extension-module"] }
+pyo3 = { version = "0.22", features = ["extension-module"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+
+[profile.release]
+lto = true
+opt-level = 3
+codegen-units = 1

@@ -1,0 +1,131 @@
+{
+  "metadata": {
+    "schema_version": "2.0",
+    "binary_sha256": "aabbccdd11223344556677889900aabbccdd11223344556677889900aabbccdd",
+    "timestamp": "2026-03-25T14:00:00Z",
+    "tool": "IDA Pro (synthetic test)",
+    "input_file": "test_old_driver.sys",
+    "arch": "x64",
+    "file_format": "PE"
+  },
+  "functions": {
+    "5368709120": {
+      "ea": 5368709120,
+      "name": "DriverEntry",
+      "start_ea": 5368709120,
+      "end_ea": 5368709340,
+      "size": 220,
+      "is_import": false,
+      "is_export": true
+    },
+    "5368709600": {
+      "ea": 5368709600,
+      "name": "DispatchDeviceControl",
+      "start_ea": 5368709600,
+      "end_ea": 5368710100,
+      "size": 500,
+      "is_import": false,
+      "is_export": false
+    },
+    "5368710200": {
+      "ea": 5368710200,
+      "name": "HandleIoctl_0x222003",
+      "start_ea": 5368710200,
+      "end_ea": 5368710500,
+      "size": 300,
+      "is_import": false,
+      "is_export": false
+    },
+    "5368710600": {
+      "ea": 5368710600,
+      "name": "ValidateInputBuffer",
+      "start_ea": 5368710600,
+      "end_ea": 5368710800,
+      "size": 200,
+      "is_import": false,
+      "is_export": false
+    },
+    "5368711000": {
+      "ea": 5368711000,
+      "name": "sub_140002000",
+      "start_ea": 5368711000,
+      "end_ea": 5368711200,
+      "size": 200,
+      "is_import": false,
+      "is_export": false
+    },
+    "5368720000": {
+      "ea": 5368720000,
+      "name": "IoCreateDevice",
+      "start_ea": 5368720000,
+      "end_ea": 5368720000,
+      "size": 0,
+      "is_import": true,
+      "is_export": false
+    },
+    "5368720100": {
+      "ea": 5368720100,
+      "name": "RtlCopyMemory",
+      "start_ea": 5368720100,
+      "end_ea": 5368720100,
+      "size": 0,
+      "is_import": true,
+      "is_export": false
+    }
+  },
+  "call_graph": [
+    {"caller_ea": 5368709120, "callee_ea": 5368720000, "callsite_ea": 5368709200, "type": "direct", "target_name": "IoCreateDevice"},
+    {"caller_ea": 5368709600, "callee_ea": 5368710200, "callsite_ea": 5368709700, "type": "direct", "target_name": "HandleIoctl_0x222003"},
+    {"caller_ea": 5368710200, "callee_ea": 5368710600, "callsite_ea": 5368710250, "type": "direct", "target_name": "ValidateInputBuffer"},
+    {"caller_ea": 5368710200, "callee_ea": 5368720100, "callsite_ea": 5368710350, "type": "direct", "target_name": "RtlCopyMemory"}
+  ],
+  "function_instructions": {
+    "5368709120": [
+      {"ea": 5368709120, "mnemonic": "push", "operands": [], "bytes_hex": "55", "target_ea": null, "target_name": null},
+      {"ea": 5368709121, "mnemonic": "mov", "operands": [], "bytes_hex": "4889E5", "target_ea": null, "target_name": null},
+      {"ea": 5368709124, "mnemonic": "sub", "operands": [], "bytes_hex": "4883EC20", "target_ea": null, "target_name": null},
+      {"ea": 5368709128, "mnemonic": "mov", "operands": [], "bytes_hex": "", "target_ea": null, "target_name": null},
+      {"ea": 5368709132, "mnemonic": "lea", "operands": [], "bytes_hex": "", "target_ea": null, "target_name": null},
+      {"ea": 5368709136, "mnemonic": "call", "operands": [], "bytes_hex": "", "target_ea": 5368720000, "target_name": "IoCreateDevice"},
+      {"ea": 5368709140, "mnemonic": "test", "operands": [], "bytes_hex": "", "target_ea": null, "target_name": null},
+      {"ea": 5368709144, "mnemonic": "jnz", "operands": [], "bytes_hex": "", "target_ea": null, "target_name": null},
+      {"ea": 5368709148, "mnemonic": "mov", "operands": [], "bytes_hex": "", "target_ea": null, "target_name": null},
+      {"ea": 5368709152, "mnemonic": "ret", "operands": [], "bytes_hex": "", "target_ea": null, "target_name": null}
+    ],
+    "5368710200": [
+      {"ea": 5368710200, "mnemonic": "push", "operands": [], "bytes_hex": "55", "target_ea": null, "target_name": null},
+      {"ea": 5368710201, "mnemonic": "mov", "operands": [], "bytes_hex": "", "target_ea": null, "target_name": null},
+      {"ea": 5368710204, "mnemonic": "cmp", "operands": [], "bytes_hex": "", "target_ea": null, "target_name": null},
+      {"ea": 5368710208, "mnemonic": "jz", "operands": [], "bytes_hex": "", "target_ea": null, "target_name": null},
+      {"ea": 5368710212, "mnemonic": "call", "operands": [], "bytes_hex": "", "target_ea": 5368710600, "target_name": "ValidateInputBuffer"},
+      {"ea": 5368710216, "mnemonic": "test", "operands": [], "bytes_hex": "", "target_ea": null, "target_name": null},
+      {"ea": 5368710220, "mnemonic": "jnz", "operands": [], "bytes_hex": "", "target_ea": null, "target_name": null},
+      {"ea": 5368710224, "mnemonic": "mov", "operands": [], "bytes_hex": "", "target_ea": null, "target_name": null},
+      {"ea": 5368710228, "mnemonic": "call", "operands": [], "bytes_hex": "", "target_ea": 5368720100, "target_name": "RtlCopyMemory"},
+      {"ea": 5368710232, "mnemonic": "ret", "operands": [], "bytes_hex": "", "target_ea": null, "target_name": null}
+    ]
+  },
+  "strings": [
+    {"ea": 5368730000, "value": "\\Device\\TestDriver", "encoding": "utf-16", "xref_funcs": [5368709120]},
+    {"ea": 5368730100, "value": "\\DosDevices\\TestDriver", "encoding": "utf-16", "xref_funcs": [5368709120]}
+  ],
+  "imports": [
+    {"ea": 5368720000, "name": "IoCreateDevice", "module": "ntoskrnl.exe", "ordinal": null},
+    {"ea": 5368720100, "name": "RtlCopyMemory", "module": "ntoskrnl.exe", "ordinal": null}
+  ],
+  "exports": [
+    {"ea": 5368709120, "name": "DriverEntry", "ordinal": 1}
+  ],
+  "driver_interface": {
+    "dispatch_table": [
+      {"major_function": 14, "handler_ea": 5368709600, "handler_name": "DispatchDeviceControl", "irql": "PASSIVE"}
+    ],
+    "devices": [
+      {"name": "\\Device\\TestDriver", "symlink": "\\DosDevices\\TestDriver", "device_type": 34, "characteristics": 0}
+    ],
+    "ioctls": [
+      {"code": 2236419, "method": "BUFFERED", "handler_ea": 5368710200, "input_size": 256, "output_size": 0}
+    ],
+    "detected_pools": ["Test"]
+  }
+}
