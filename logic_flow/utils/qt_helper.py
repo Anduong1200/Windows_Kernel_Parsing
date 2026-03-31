@@ -617,10 +617,6 @@ def create_performance_timer():
     return QTimer()
 
 
-
-        widget.update()
-
-
 def deferred_update(widget: QWidget, delay_ms: int = 50):
     """Defer widget update to prevent excessive repaints"""
     def update():

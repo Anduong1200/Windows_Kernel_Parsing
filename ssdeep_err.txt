@@ -1,0 +1,96 @@
+Collecting ssdeep
+  Using cached ssdeep-3.4.tar.gz (110 kB)
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'error'
+  error: subprocess-exited-with-error
+  
+  Preparing metadata (pyproject.toml) did not run successfully.
+  exit code: 1
+  
+  [72 lines of output]
+  running dist_info
+  creating C:\Users\ADMIN\AppData\Local\Temp\pip-modern-metadata-vozlpk8i\ssdeep.egg-info
+  writing C:\Users\ADMIN\AppData\Local\Temp\pip-modern-metadata-vozlpk8i\ssdeep.egg-info\PKG-INFO
+  writing dependency_links to C:\Users\ADMIN\AppData\Local\Temp\pip-modern-metadata-vozlpk8i\ssdeep.egg-info\dependency_links.txt
+  writing requirements to C:\Users\ADMIN\AppData\Local\Temp\pip-modern-metadata-vozlpk8i\ssdeep.egg-info\requires.txt
+  writing top-level names to C:\Users\ADMIN\AppData\Local\Temp\pip-modern-metadata-vozlpk8i\ssdeep.egg-info\top_level.txt
+  writing manifest file 'C:\Users\ADMIN\AppData\Local\Temp\pip-modern-metadata-vozlpk8i\ssdeep.egg-info\SOURCES.txt'
+  Traceback (most recent call last):
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\pip\_vendor\pyproject_hooks\_in_process\_in_process.py", line 353, in <module>
+      main()
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\pip\_vendor\pyproject_hooks\_in_process\_in_process.py", line 335, in main
+      json_out['return_val'] = hook(**hook_input['kwargs'])
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\pip\_vendor\pyproject_hooks\_in_process\_in_process.py", line 149, in prepare_metadata_for_build_wheel
+      return hook(metadata_directory, config_settings)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\build_meta.py", line 377, in prepare_metadata_for_build_wheel
+      self.run_setup()
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\build_meta.py", line 484, in run_setup
+      self).run_setup(setup_script=setup_script)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\build_meta.py", line 335, in run_setup
+      exec(code, locals())
+    File "<string>", line 108, in <module>
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\__init__.py", line 87, in setup
+      return distutils.core.setup(**attrs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\_distutils\core.py", line 185, in setup
+      return run_commands(dist)
+             ^^^^^^^^^^^^^^^^^^
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\_distutils\core.py", line 201, in run_commands
+      dist.run_commands()
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\_distutils\dist.py", line 968, in run_commands
+      self.run_command(cmd)
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\dist.py", line 1217, in run_command
+      super().run_command(command)
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\_distutils\dist.py", line 987, in run_command
+      cmd_obj.run()
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\command\dist_info.py", line 96, in run
+      self.egg_info.run()
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\command\egg_info.py", line 308, in run
+      self.find_sources()
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\command\egg_info.py", line 316, in find_sources
+      mm.run()
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\command\egg_info.py", line 560, in run
+      self.add_defaults()
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\command\egg_info.py", line 597, in add_defaults
+      sdist.add_defaults(self)
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\command\sdist.py", line 106, in add_defaults
+      super().add_defaults()
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\_distutils\command\sdist.py", line 250, in add_defaults
+      self._add_defaults_python()
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\command\sdist.py", line 117, in _add_defaults_python
+      build_py = self.get_finalized_command('build_py')
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\_distutils\cmd.py", line 306, in get_finalized_command
+      cmd_obj.ensure_finalized()
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\_distutils\cmd.py", line 109, in ensure_finalized
+      self.finalize_options()
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\command\build_py.py", line 37, in finalize_options
+      orig.build_py.finalize_options(self)
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\_distutils\command\build_py.py", line 47, in finalize_options
+      self.set_undefined_options(
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\_distutils\cmd.py", line 294, in set_undefined_options
+      src_cmd_obj.ensure_finalized()
+    File "D:\examinate\asusptp_poc\18\project\venv\Lib\site-packages\setuptools\_distutils\cmd.py", line 109, in ensure_finalized
+      self.finalize_options()
+    File "<string>", line 24, in finalize_options
+    File "<string>", line 69, in get_ext_modules
+    File "C:\Users\ADMIN\AppData\Local\Temp\pip-install-inyyy9rj\ssdeep_78161906ca91470a84f35959188c9ab7\src\ssdeep\__init__.py", line 8, in <module>
+      import six
+  ModuleNotFoundError: No module named 'six'
+  [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: metadata-generation-failed
+
+Encountered error while generating package metadata.
+
+See above for output.
+
+note: This is an issue with the package mentioned above, not pip.
+hint: See above for details.
+
+[notice] A new release of pip is available: 24.0 -> 26.0.1
+[notice] To update, run: D:\examinate\asusptp_poc\18\project\venv\Scripts\python.exe -m pip install --upgrade pip

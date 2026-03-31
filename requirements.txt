@@ -11,7 +11,7 @@ pefile>=2023.2.7
 
 # --- Heuristic Analysis ---
 py-tlsh>=4.5.0
-ssdeep>=3.4
+# ssdeep>=3.4           # Requires manual C compilation on Windows, commented out by default
 
 # --- Advanced Semantic Engine (BinDiff Killer) ---
 angr>=9.2.65          # Binary Lifting & Symbolic Execution

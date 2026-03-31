@@ -17,7 +17,7 @@ from PyQt6.QtWidgets import (
     QLabel, QProgressBar, QFrame, QSplitter, QScrollArea,
     QGroupBox, QFormLayout, QTabWidget, QTreeWidget, QTreeWidgetItem,
     QStatusBar, QSystemTrayIcon, QMenu, QMessageBox, QFileDialog, QSpinBox, QCompleter, QInputDialog, QComboBox, QLineEdit,
-    QTableWidget, QHeaderView
+    QTableWidget, QHeaderView, QTableWidgetItem
 )
 from PyQt6.QtCore import (
     Qt, QThread, pyqtSignal, QTimer, QPropertyAnimation,
@@ -26,7 +26,7 @@ from PyQt6.QtCore import (
 from PyQt6.QtGui import (
     QFont, QIcon, QPixmap, QColor, QPalette, QPainter,
     QBrush, QPen, QAction, QFontDatabase, QPainterPath,
-    QTextOption
+    QTextOption, QCursor
 )
 
 from .widgets import (
@@ -43,7 +43,7 @@ from .resources import (
 from ..utils.qt_helper import (
     setup_qt_environment, optimize_widget, optimize_application,
     optimize_scroll_area, optimize_text_edit, create_performance_timer,
-    batch_widget_updates, deferred_update, Worker
+    deferred_update, Worker
 )
 from ..utils.config import ConfigManager
 from ..core.analyzer import IDAAnalysisRunner

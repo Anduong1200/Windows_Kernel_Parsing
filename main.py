@@ -11,7 +11,7 @@ import os
 # Add the logic_flow package to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from logic_flow.utils.qt_helper import setup_qt_environment, setup_application_attributes
+from logic_flow.utils.qt_helper import setup_qt_environment, optimize_application
 from logic_flow.utils.logging_utils import setup_logging
 from logic_flow.gui.main_window import LogicFlowAnalysisGUI
 
@@ -37,7 +37,7 @@ def main():
         app.setOrganizationName("Security Research Tools")
 
         # Setup optimized application attributes
-        setup_application_attributes(app)
+        optimize_application(app)
 
         # Create and setup main window
         window = LogicFlowAnalysisGUI()

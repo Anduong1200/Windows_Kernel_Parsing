@@ -160,6 +160,7 @@ fn calculate_jaccard_similarity(set_a: Vec<String>, set_b: Vec<String>) -> f64 {
 
 /// A graph traversal to find connected nodes (BFS).
 #[pyfunction]
+#[pyo3(signature = (start_node, adjacency_list, max_depth=None))]
 fn bfs_traversal(
     start_node: String,
     adjacency_list: HashMap<String, Vec<String>>,
