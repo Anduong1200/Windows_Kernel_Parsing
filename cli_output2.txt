@@ -1,0 +1,16 @@
+tlsh library not installed. Install with: pip install py-tlsh
+
+==============================================================
+  Equivalence Verification Report
+==============================================================
+  Pairs verified: 4
+  Equivalent:     3
+  Different:      0
+  Inconclusive:   1
+
+  [+] DispatchDeviceControl                equivalent     conf=99%
+  [+] DriverEntry                          equivalent     conf=99%
+  [+] ValidateInputBuffer                  equivalent     conf=99%
+  [?] HandleIoctl_0x222003                 inconclusive   conf=92%
+==============================================================
+

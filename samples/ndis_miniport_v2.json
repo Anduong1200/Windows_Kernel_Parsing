@@ -1,0 +1,193 @@
+{
+  "metadata": {
+    "schema_version": "2.0",
+    "binary_sha256": "22222222aaaabbbbccccddddeeee111122223333444455556666777788889999",
+    "timestamp": "2026-03-30T12:00:00Z",
+    "tool": "IDA Pro (synthetic test)",
+    "input_file": "ndis_miniport_v2.sys",
+    "arch": "x64",
+    "file_format": "PE"
+  },
+  "functions": {
+    "5368809120": {
+      "ea": 5368809120, "name": "DriverEntry",
+      "start_ea": 5368809120, "end_ea": 5368809340, "size": 220,
+      "is_import": false, "is_export": true
+    },
+    "5368809600": {
+      "ea": 5368809600, "name": "MiniportInitializeEx",
+      "start_ea": 5368809600, "end_ea": 5368810100, "size": 500,
+      "is_import": false, "is_export": false
+    },
+    "5368810200": {
+      "ea": 5368810200, "name": "MiniportSendNetBufferLists",
+      "start_ea": 5368810200, "end_ea": 5368810700, "size": 500,
+      "is_import": false, "is_export": false
+    },
+    "5368810800": {
+      "ea": 5368810800, "name": "MiniportReturnNetBufferLists",
+      "start_ea": 5368810800, "end_ea": 5368811100, "size": 300,
+      "is_import": false, "is_export": false
+    },
+    "5368811200": {
+      "ea": 5368811200, "name": "MiniportHaltEx",
+      "start_ea": 5368811200, "end_ea": 5368811500, "size": 300,
+      "is_import": false, "is_export": false
+    },
+    "5368811600": {
+      "ea": 5368811600, "name": "MiniportOidRequest",
+      "start_ea": 5368811600, "end_ea": 5368812000, "size": 400,
+      "is_import": false, "is_export": false
+    },
+    "5368812100": {
+      "ea": 5368812100, "name": "AllocateSharedMemory",
+      "start_ea": 5368812100, "end_ea": 5368812400, "size": 300,
+      "is_import": false, "is_export": false
+    },
+    "5368812500": {
+      "ea": 5368812500, "name": "ValidateOidInput",
+      "start_ea": 5368812500, "end_ea": 5368812800, "size": 300,
+      "is_import": false, "is_export": false
+    },
+    "5368820000": {
+      "ea": 5368820000, "name": "NdisMRegisterMiniportDriver",
+      "start_ea": 5368820000, "end_ea": 5368820000, "size": 0,
+      "is_import": true, "is_export": false
+    },
+    "5368820100": {
+      "ea": 5368820100, "name": "NdisAllocateNetBufferList",
+      "start_ea": 5368820100, "end_ea": 5368820100, "size": 0,
+      "is_import": true, "is_export": false
+    },
+    "5368820200": {
+      "ea": 5368820200, "name": "NdisMSetMiniportAttributes",
+      "start_ea": 5368820200, "end_ea": 5368820200, "size": 0,
+      "is_import": true, "is_export": false
+    },
+    "5368820300": {
+      "ea": 5368820300, "name": "NdisMIndicateReceiveNetBufferLists",
+      "start_ea": 5368820300, "end_ea": 5368820300, "size": 0,
+      "is_import": true, "is_export": false
+    },
+    "5368820400": {
+      "ea": 5368820400, "name": "NdisAllocateMemoryWithTagPriority",
+      "start_ea": 5368820400, "end_ea": 5368820400, "size": 0,
+      "is_import": true, "is_export": false
+    },
+    "5368820500": {
+      "ea": 5368820500, "name": "ProbeForRead",
+      "start_ea": 5368820500, "end_ea": 5368820500, "size": 0,
+      "is_import": true, "is_export": false
+    }
+  },
+  "call_graph": [
+    {"caller_ea": 5368809120, "callee_ea": 5368820000, "callsite_ea": 5368809200, "type": "direct", "target_name": "NdisMRegisterMiniportDriver"},
+    {"caller_ea": 5368809600, "callee_ea": 5368820200, "callsite_ea": 5368809700, "type": "direct", "target_name": "NdisMSetMiniportAttributes"},
+    {"caller_ea": 5368810200, "callee_ea": 5368820100, "callsite_ea": 5368810300, "type": "direct", "target_name": "NdisAllocateNetBufferList"},
+    {"caller_ea": 5368810800, "callee_ea": 5368820300, "callsite_ea": 5368810900, "type": "direct", "target_name": "NdisMIndicateReceiveNetBufferLists"},
+    {"caller_ea": 5368812100, "callee_ea": 5368820400, "callsite_ea": 5368812200, "type": "direct", "target_name": "NdisAllocateMemoryWithTagPriority"},
+    {"caller_ea": 5368811600, "callee_ea": 5368812500, "callsite_ea": 5368811700, "type": "direct", "target_name": "ValidateOidInput"},
+    {"caller_ea": 5368812500, "callee_ea": 5368820500, "callsite_ea": 5368812600, "type": "direct", "target_name": "ProbeForRead"}
+  ],
+  "function_instructions": {
+    "5368809120": [
+      {"ea": 5368809120, "mnemonic": "push", "operands": [], "bytes_hex": "55"},
+      {"ea": 5368809121, "mnemonic": "mov", "operands": [], "bytes_hex": "4889E5"},
+      {"ea": 5368809124, "mnemonic": "sub", "operands": [], "bytes_hex": "4883EC20"},
+      {"ea": 5368809128, "mnemonic": "mov", "operands": [], "bytes_hex": ""},
+      {"ea": 5368809132, "mnemonic": "lea", "operands": [], "bytes_hex": ""},
+      {"ea": 5368809136, "mnemonic": "call", "operands": [], "bytes_hex": "", "target_ea": 5368820000, "target_name": "NdisMRegisterMiniportDriver"},
+      {"ea": 5368809140, "mnemonic": "test", "operands": [], "bytes_hex": ""},
+      {"ea": 5368809144, "mnemonic": "jnz", "operands": [], "bytes_hex": ""},
+      {"ea": 5368809148, "mnemonic": "mov", "operands": [], "bytes_hex": ""},
+      {"ea": 5368809152, "mnemonic": "ret", "operands": [], "bytes_hex": ""}
+    ],
+    "5368809600": [
+      {"ea": 5368809600, "mnemonic": "push", "operands": [], "bytes_hex": ""},
+      {"ea": 5368809601, "mnemonic": "mov", "operands": [], "bytes_hex": ""},
+      {"ea": 5368809604, "mnemonic": "sub", "operands": [], "bytes_hex": ""},
+      {"ea": 5368809608, "mnemonic": "mov", "operands": [], "bytes_hex": ""},
+      {"ea": 5368809612, "mnemonic": "lea", "operands": [], "bytes_hex": ""},
+      {"ea": 5368809616, "mnemonic": "call", "operands": [], "bytes_hex": "", "target_ea": 5368820200},
+      {"ea": 5368809620, "mnemonic": "test", "operands": [], "bytes_hex": ""},
+      {"ea": 5368809624, "mnemonic": "jnz", "operands": [], "bytes_hex": ""},
+      {"ea": 5368809628, "mnemonic": "xor", "operands": [], "bytes_hex": ""},
+      {"ea": 5368809632, "mnemonic": "ret", "operands": [], "bytes_hex": ""}
+    ],
+    "5368810200": [
+      {"ea": 5368810200, "mnemonic": "push", "operands": [], "bytes_hex": ""},
+      {"ea": 5368810201, "mnemonic": "mov", "operands": [], "bytes_hex": ""},
+      {"ea": 5368810204, "mnemonic": "cmp", "operands": [], "bytes_hex": ""},
+      {"ea": 5368810208, "mnemonic": "jz", "operands": [], "bytes_hex": ""},
+      {"ea": 5368810212, "mnemonic": "mov", "operands": [], "bytes_hex": ""},
+      {"ea": 5368810216, "mnemonic": "call", "operands": [], "bytes_hex": "", "target_ea": 5368820100},
+      {"ea": 5368810220, "mnemonic": "test", "operands": [], "bytes_hex": ""},
+      {"ea": 5368810224, "mnemonic": "jnz", "operands": [], "bytes_hex": ""},
+      {"ea": 5368810228, "mnemonic": "mov", "operands": [], "bytes_hex": ""},
+      {"ea": 5368810232, "mnemonic": "ret", "operands": [], "bytes_hex": ""}
+    ],
+    "5368810800": [
+      {"ea": 5368810800, "mnemonic": "push", "operands": [], "bytes_hex": ""},
+      {"ea": 5368810801, "mnemonic": "mov", "operands": [], "bytes_hex": ""},
+      {"ea": 5368810804, "mnemonic": "call", "operands": [], "bytes_hex": "", "target_ea": 5368820300},
+      {"ea": 5368810808, "mnemonic": "xor", "operands": [], "bytes_hex": ""},
+      {"ea": 5368810812, "mnemonic": "ret", "operands": [], "bytes_hex": ""}
+    ],
+    "5368811200": [
+      {"ea": 5368811200, "mnemonic": "push", "operands": [], "bytes_hex": ""},
+      {"ea": 5368811201, "mnemonic": "mov", "operands": [], "bytes_hex": ""},
+      {"ea": 5368811204, "mnemonic": "xor", "operands": [], "bytes_hex": ""},
+      {"ea": 5368811208, "mnemonic": "call", "operands": [], "bytes_hex": ""},
+      {"ea": 5368811212, "mnemonic": "ret", "operands": [], "bytes_hex": ""}
+    ],
+    "5368811600": [
+      {"ea": 5368811600, "mnemonic": "push", "operands": [], "bytes_hex": ""},
+      {"ea": 5368811601, "mnemonic": "mov", "operands": [], "bytes_hex": ""},
+      {"ea": 5368811604, "mnemonic": "cmp", "operands": [], "bytes_hex": ""},
+      {"ea": 5368811608, "mnemonic": "jz", "operands": [], "bytes_hex": ""},
+      {"ea": 5368811612, "mnemonic": "call", "operands": [], "bytes_hex": "", "target_ea": 5368812500},
+      {"ea": 5368811616, "mnemonic": "cmp", "operands": [], "bytes_hex": ""},
+      {"ea": 5368811620, "mnemonic": "jz", "operands": [], "bytes_hex": ""},
+      {"ea": 5368811624, "mnemonic": "mov", "operands": [], "bytes_hex": ""},
+      {"ea": 5368811628, "mnemonic": "ret", "operands": [], "bytes_hex": ""}
+    ],
+    "5368812100": [
+      {"ea": 5368812100, "mnemonic": "push", "operands": [], "bytes_hex": ""},
+      {"ea": 5368812101, "mnemonic": "mov", "operands": [], "bytes_hex": ""},
+      {"ea": 5368812104, "mnemonic": "mov", "operands": [], "bytes_hex": ""},
+      {"ea": 5368812108, "mnemonic": "call", "operands": [], "bytes_hex": "", "target_ea": 5368820400},
+      {"ea": 5368812112, "mnemonic": "test", "operands": [], "bytes_hex": ""},
+      {"ea": 5368812116, "mnemonic": "jz", "operands": [], "bytes_hex": ""},
+      {"ea": 5368812120, "mnemonic": "ret", "operands": [], "bytes_hex": ""}
+    ],
+    "5368812500": [
+      {"ea": 5368812500, "mnemonic": "push", "operands": [], "bytes_hex": ""},
+      {"ea": 5368812501, "mnemonic": "mov", "operands": [], "bytes_hex": ""},
+      {"ea": 5368812504, "mnemonic": "cmp", "operands": [], "bytes_hex": ""},
+      {"ea": 5368812508, "mnemonic": "jz", "operands": [], "bytes_hex": ""},
+      {"ea": 5368812512, "mnemonic": "call", "operands": [], "bytes_hex": "", "target_ea": 5368820500},
+      {"ea": 5368812516, "mnemonic": "ret", "operands": [], "bytes_hex": ""}
+    ]
+  },
+  "strings": [
+    {"ea": 5368830000, "value": "NDIS Miniport v2", "encoding": "utf-16", "xref_funcs": [5368809120]},
+    {"ea": 5368830100, "value": "\\Device\\NdisMiniport", "encoding": "utf-16", "xref_funcs": [5368809120]}
+  ],
+  "imports": [
+    {"ea": 5368820000, "name": "NdisMRegisterMiniportDriver", "module": "ndis.sys", "ordinal": null},
+    {"ea": 5368820100, "name": "NdisAllocateNetBufferList", "module": "ndis.sys", "ordinal": null},
+    {"ea": 5368820200, "name": "NdisMSetMiniportAttributes", "module": "ndis.sys", "ordinal": null},
+    {"ea": 5368820300, "name": "NdisMIndicateReceiveNetBufferLists", "module": "ndis.sys", "ordinal": null},
+    {"ea": 5368820400, "name": "NdisAllocateMemoryWithTagPriority", "module": "ndis.sys", "ordinal": null},
+    {"ea": 5368820500, "name": "ProbeForRead", "module": "ntoskrnl.exe", "ordinal": null}
+  ],
+  "exports": [
+    {"ea": 5368809120, "name": "DriverEntry", "ordinal": 1}
+  ],
+  "driver_interface": {
+    "dispatch_table": [],
+    "devices": [],
+    "ioctls": [],
+    "detected_pools": ["Ndis"]
+  }
+}
